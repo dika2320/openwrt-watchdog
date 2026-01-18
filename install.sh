@@ -2,7 +2,7 @@
 
 echo "[+] OpenWrt Watchdog Installer"
 
-BASE_URL="https://cdn.jsdelivr.net/gh/USERNAME/openwrt-watchdog@main"
+BASE_URL="https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main"
 BIN="/usr/bin"
 CRON="/etc/crontabs/root"
 
