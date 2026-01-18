@@ -77,9 +77,11 @@ Project ini **fleksibel & aman untuk repo public**, karena **tidak memaksa semua
 
 ## 📦 Cara Install
 
-Jalankan di OpenWrt (via SSH):
+Jalankan di OpenWrt (via terminal):
 
 ```sh
+=================================================================================================================
+
 wget https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh
 chmod +x install.sh
 ./install.sh
