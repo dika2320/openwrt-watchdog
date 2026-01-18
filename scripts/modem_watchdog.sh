@@ -1,15 +1,14 @@
 #!/bin/ash
 
-# ================= KONFIGURASI =================
 PING1="8.8.8.8"
 PING2="1.1.1.1"
 
 INTERFACE="eth1"
 USB_PATH="1-1"
 
-CHECK_HOUR="03"        # jam preventive reset
-CHECK_MIN_START="00"   # menit mulai
-CHECK_MIN_END="05"     # window 5 menit (hindari double reset)
+CHECK_HOUR="03"       
+CHECK_MIN_START="00"  
+CHECK_MIN_END="05"    
 
 WAIT_AFTER_IF=30
 WAIT_AFTER_USB=60
