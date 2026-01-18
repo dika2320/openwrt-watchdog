@@ -88,7 +88,9 @@ chmod +x install.sh
 
 
 UNISTALL:
-sh -c "$(wget -qO - https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh)"
+sh -c "$wget https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh
+chmod +x uninstall.sh
+./uninstall.sh
 
 =================================================================================================================
 
