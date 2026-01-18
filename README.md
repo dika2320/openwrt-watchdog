@@ -12,10 +12,10 @@ Install:
 =================================================================================================================
 
 BASH:
-bash -c "$(wget -qO - https://cdn.jsdelivr.net/gh/dika2320/REPO@main/install.sh)"
+bash -c "$(wget -qO - https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh)"
 
 CURL:
-bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/USERNAME/REPO@main/install.sh)"
+sh -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh)"
 
 
 =================================================================================================================
