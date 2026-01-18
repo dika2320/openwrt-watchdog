@@ -75,7 +75,16 @@ Project ini **fleksibel & aman untuk repo public**, karena **tidak memaksa semua
 
 ---
 
-## 📦 Cara Install
+Script uninstall **aman** dan hanya menghapus:
+- Script watchdog
+- Cron job terkait watchdog
+
+❌ Tidak menghapus:
+- Konfigurasi jaringan
+- Firewall
+- Paket OpenWrt
+
+## 📦 Cara Install dan unistall
 
 Jalankan di OpenWrt (via terminal):
 
