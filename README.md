@@ -98,9 +98,12 @@ ash:
 ash -c "$(wget -qO- https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh)"
 
 UNISTALL:
-sh -c "$wget https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh
-chmod +x uninstall.sh
-./uninstall.sh
+
+bash:
+bash -c "$(wget -qO- https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh)"
+
+ash:
+ash -c "$(wget -qO- https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh)"
 
 =================================================================================================================
 
