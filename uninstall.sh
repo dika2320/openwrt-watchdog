@@ -1,42 +1,27 @@
 #!/bin/ash
 
-echo "[!] OpenWrt Watchdog Uninstaller"
+echo "[+] Memulai proses Uninstall OpenWrt Watchdog..."
 
 BIN="/usr/bin"
 CRON="/etc/crontabs/root"
 
+# 1. Menghapus file script dari sistem
+echo "[-] Menghapus file script..."
+rm -f "$BIN/reboot_stb.sh"
+rm -f "$BIN/interface_watchdog.sh"
+rm -f "$BIN/modem_watchdog.sh"
 
+# 2. Menghapus jadwal dari Crontab
 if [ -f "$CRON" ]; then
-    sed -i '/modem_watchdog.sh/d' "$CRON"
+    echo "[-] Menghapus jadwal di Crontab..."
     sed -i '/reboot_stb.sh/d' "$CRON"
-    sed -i '/if_restart.sh/d' "$CRON"
-    echo "[✓] Cron watchdog dibersihkan"
-else
-    echo "[!] Crontab tidak ditemukan"
+    sed -i '/interface_watchdog.sh/d' "$CRON"
+    sed -i '/modem_watchdog.sh/d' "$CRON"
 fi
 
-
-if [ -f "$BIN/modem_watchdog.sh" ]; then
-    rm -f "$BIN/modem_watchdog.sh"
-    echo "[✓] modem_watchdog.sh dihapus"
-else
-    echo "[i] modem_watchdog.sh tidak ditemukan"
-fi
-
-if [ -f "$BIN/reboot_stb.sh" ]; then
-    rm -f "$BIN/reboot_stb.sh"
-    echo "[✓] reboot_stb.sh dihapus"
-else
-    echo "[i] reboot_stb.sh tidak ditemukan"
-fi
-
-if [ -f "$BIN/if_restart.sh" ]; then
-    rm -f "$BIN/if_restart.sh"
-    echo "[✓] if_restart.sh dihapus"
-fi
-
-
+# 3. Restart service cron untuk menerapkan perubahan
+echo "[+] Restarting Cron service..."
 /etc/init.d/cron restart
-sync
 
-echo "[✓] OpenWrt Watchdog berhasil di-uninstall"
+echo ""
+echo "[✓] Uninstall Selesai! Semua script dan jadwal telah dihapus."
