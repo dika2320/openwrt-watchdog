@@ -69,7 +69,3 @@ logread | grep -E "MODEM-WATCHDOG|IFRESTART|REBOOT"
 
 **Catatan:** Pastikan modem Anda berada pada port USB yang sesuai (`1-1`). Jika berbeda, Anda dapat menyesuaikan variabel `USB_PATH` pada file `modem_watchdog.sh` setelah instalasi di folder `/usr/bin/`.
 
-
-Apakah ada bagian dari panduan di atas yang ingin Anda ubah atau tambahkan fiturnya?
-
-```
