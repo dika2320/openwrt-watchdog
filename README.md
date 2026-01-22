@@ -1,111 +1,75 @@
-# OpenWrt Watchdog
+# OpenWrt Watchdog & Auto Reboot
 
-OpenWrt Watchdog adalah kumpulan script sederhana untuk **menjaga koneksi internet tetap stabil**
-pada perangkat **OpenWrt (STB / router)**.
+Script otomatis untuk menjaga stabilitas koneksi internet pada STB OpenWrt, khususnya untuk pengguna Modem Rakitan dengan protokol **NCM**. Script ini memantau interface, melakukan reset USB jika modem hang, dan melakukan reboot STB secara terjadwal.
 
-Project ini **fleksibel & aman untuk repo public**, karena **tidak memaksa semua user memakai modem USB NCM**.
+## ✨ Fitur
+- **Auto Detect Interface:** Mendeteksi interface WAN secara otomatis.
+- **Interface Watchdog:** Restart interface jika ping ke internet gagal.
+- **Modem Watchdog (NCM):** Melakukan *Hard Reset* via USB Unbind/Bind jika modem tidak merespons (spesifik Port USB 1-1).
+- **Scheduled Reboot:** Menjaga performa STB dengan reboot otomatis setiap subuh.
+- **Installer Interaktif:** Pengguna bisa menentukan jam reboot dan interval pengecekan sendiri.
 
----
+## 🚀 Cara Instalasi
 
-## 🎯 Cocok Untuk
+Pilih salah satu perintah di bawah ini sesuai dengan shell yang Anda gunakan di STB:
 
-- STB OpenWrt (HG680P, B860H, dll)
-- Router OpenWrt
-- Jaringan RT/RW / hotspot
-- Modem USB (Huawei / non-Huawei)
-- Koneksi WAN yang sering drop / freeze
+### Jalur ASH (Standar OpenWrt)
+```bash
+ash -c "$(wget -qO- [https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh](https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh))"
 
----
+```
 
-## ✨ Fitur Utama
+### Jalur BASH (Opsional)
 
-### 🔄 Watchdog Interface (Universal)
-- Auto restart **interface WAN yang aktif**
-- **Tidak hardcode nama interface**
-- Script akan **mencari interface UP secara otomatis**
-- Cocok untuk:
-  - Modem USB
-  - Ethernet
-  - Tethering HP
-  - PPP / DHCP / NCM
+```bash
+bash -c "$(wget -qO- [https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh](https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh))"
 
-> ✅ Fitur ini **SELALU aktif** di semua perangkat
+```
 
 ---
 
-### 📶 Watchdog Modem USB (Opsional & Otomatis)
-- **Hanya diaktifkan jika modem NCM terdeteksi**
-- Deteksi berdasarkan kernel module:
-  - `cdc_ncm`
-  - `huawei_cdc_ncm`
-- Jika **bukan modem NCM**:
-  - Script modem **tidak di-install**
-  - Tidak ada cron modem
-  - Sistem tetap aman & ringan
+## 🗑️ Cara Uninstall
 
-> ❌ Tidak ada error meskipun modem tidak mendukung NCM
+Jika ingin menghapus semua script dan jadwal crontab dari sistem:
 
----
+### Jalur ASH (Standar OpenWrt)
 
-### 🔁 Auto Reboot STB Terjadwal
-- Reboot otomatis harian
-- Default: **jam 03:00**
-- Bisa diubah saat install
-- Berguna untuk:
-  - Membersihkan cache
-  - Mencegah freeze jangka panjang
+```bash
+ash -c "$(wget -qO- [https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh](https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh))"
+
+```
+
+### Jalur BASH (Opsional)
+
+```bash
+bash -c "$(wget -qO- [https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh](https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh))"
+
+```
 
 ---
 
-### 🛡️ Aman & Anti Bootloop
-- Semua proses dijalankan via **cron**
-- Tidak menggunakan loop background
-- Delay & pengecekan aman
-- Tidak menyebabkan reboot berulang
+## 📁 Struktur File
+
+* `install.sh`: Script penginstal otomatis.
+* `uninstall.sh`: Script penghapus otomatis.
+* `scripts/reboot_stb.sh`: Script reboot terjadwal.
+* `scripts/interface_watchdog.sh`: Script pemantau koneksi interface.
+* `scripts/modem_watchdog.sh`: Script hard reset USB modem (Unbind/Bind).
+
+## 📊 Cara Monitoring
+
+Anda bisa melihat log aktivitas watchdog melalui terminal dengan perintah:
+
+```bash
+logread | grep -E "MODEM-WATCHDOG|IFRESTART|REBOOT"
+
+```
 
 ---
 
-## ⚙️ Cara Kerja Singkat
-
-| Kondisi Perangkat | Yang Diaktifkan |
-|------------------|----------------|
-| Semua OpenWrt | Watchdog Interface + Reboot STB |
-| Modem NCM terdeteksi | + Watchdog Modem |
-| Bukan modem NCM | Modem watchdog dilewati |
-
----
-
-Script uninstall **aman** dan hanya menghapus:
-- Script watchdog
-- Cron job terkait watchdog
-
-❌ Tidak menghapus:
-- Konfigurasi jaringan
-- Firewall
-- Paket OpenWrt
-
-## 📦 Cara Install dan unistall
-
-Jalankan di OpenWrt (via terminal):
-
-```sh
-=================================================================================================================
-
-bash:
-bash -c "$(wget -qO- https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh)"
-
-ash:
-ash -c "$(wget -qO- https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh)"
-
-UNISTALL:
-
-bash:
-bash -c "$(wget -qO- https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh)"
-
-ash:
-ash -c "$(wget -qO- https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/uninstall.sh)"
-
-=================================================================================================================
+**Catatan:** Pastikan modem Anda berada pada port USB yang sesuai (`1-1`). Jika berbeda, Anda dapat menyesuaikan variabel `USB_PATH` pada file `modem_watchdog.sh` setelah instalasi di folder `/usr/bin/`.
 
 
+Apakah ada bagian dari panduan di atas yang ingin Anda ubah atau tambahkan fiturnya?
 
+```
