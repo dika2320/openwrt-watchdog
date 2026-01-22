@@ -7,23 +7,23 @@ BASE_URL="https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main"
 BIN="/usr/bin"
 CRON="/etc/crontabs/root"
 
-# Buat direktori bin jika belum ada (antisipasi sistem custom)
+# Buat direktori bin jika belum ada
 mkdir -p $BIN
 
 echo ""
 echo "--- Konfigurasi Auto Reboot STB ---"
 printf "Jam reboot STB (0-23) [default: 3]: "
-read REBOOT_HOUR
+read -r REBOOT_HOUR
 REBOOT_HOUR=${REBOOT_HOUR:-3}
 
 printf "Menit reboot STB (0-59) [default: 0]: "
-read REBOOT_MIN
+read -r REBOOT_MIN
 REBOOT_MIN=${REBOOT_MIN:-0}
 
 echo ""
 echo "--- Konfigurasi Watchdog Interface ---"
 printf "Interval cek interface (menit) [default: 5]: "
-read IF_INTERVAL
+read -r IF_INTERVAL
 IF_INTERVAL=${IF_INTERVAL:-5}
 
 # Deteksi Modem NCM
@@ -35,7 +35,7 @@ fi
 if [ "$HAS_NCM" -eq 1 ]; then
     echo "[✓] Modem NCM terdeteksi"
     printf "Interval cek modem NCM (menit) [default: 5]: "
-    read MODEM_INTERVAL
+    read -r MODEM_INTERVAL
     MODEM_INTERVAL=${MODEM_INTERVAL:-5}
 else
     echo "[!] Modem NCM tidak terdeteksi, modem watchdog dilewati"
@@ -44,12 +44,10 @@ fi
 echo ""
 echo "[+] Mengunduh script..."
 
-# Fungsi download dengan verifikasi
 download_script() {
     local name=$1
     local target=$2
     echo "Sedang mengunduh $name..."
-    # Menghapus file lama jika ada agar tidak tertumpuk .1 .2
     rm -f "$target"
     wget -q --no-check-certificate -O "$target" "$BASE_URL/scripts/$name"
     
@@ -57,7 +55,7 @@ download_script() {
         chmod +x "$target"
         echo "[✓] $name berhasil dipasang."
     else
-        echo "[X] Gagal mengunduh $name! Cek folder 'scripts' di GitHub Anda."
+        echo "[X] Gagal mengunduh $name!"
     fi
 }
 
@@ -68,26 +66,30 @@ if [ "$HAS_NCM" -eq 1 ]; then
     download_script "modem_watchdog.sh" "$BIN/modem_watchdog.sh"
 fi
 
-# Bersihkan crontab lama agar tidak duplikat
-echo "[+] Mengatur ulang Crontab..."
-touch $CRON
-sed -i '/reboot_stb.sh/d' $CRON
-sed -i '/interface_watchdog.sh/d' $CRON
-sed -i '/modem_watchdog.sh/d' $CRON
+# Pastikan file crontab root ada sebelum diedit
+[ ! -f "$CRON" ] && touch "$CRON"
 
-# Tambahkan jadwal baru
-echo "*/$IF_INTERVAL * * * * $BIN/interface_watchdog.sh" >> $CRON
-echo "$REBOOT_MIN $REBOOT_HOUR * * * $BIN/reboot_stb.sh" >> $CRON
+echo "[+] Mengatur ulang Crontab..."
+# Bersihkan baris lama
+sed -i '/reboot_stb.sh/d' "$CRON"
+sed -i '/interface_watchdog.sh/d' "$CRON"
+sed -i '/modem_watchdog.sh/d' "$CRON"
+
+# Tambahkan jadwal baru dengan newline untuk keamanan
+echo "*/$IF_INTERVAL * * * * $BIN/interface_watchdog.sh" >> "$CRON"
+echo "$REBOOT_MIN $REBOOT_HOUR * * * $BIN/reboot_stb.sh" >> "$CRON"
 
 if [ "$HAS_NCM" -eq 1 ] && [ -f "$BIN/modem_watchdog.sh" ]; then
-    echo "*/$MODEM_INTERVAL * * * * $BIN/modem_watchdog.sh" >> $CRON
+    echo "*/$MODEM_INTERVAL * * * * $BIN/modem_watchdog.sh" >> "$CRON"
 fi
 
-# Restart Cron agar perubahan aktif
+# Restart Cron
 /etc/init.d/cron restart
 
 echo ""
 echo "[✓] INSTALASI SELESAI"
 echo "    - Reboot STB        : Jam $REBOOT_HOUR:$REBOOT_MIN"
 echo "    - Watchdog Interface: Tiap $IF_INTERVAL menit"
-[ "$HAS_NCM" -eq 1 ] && echo "    - Watchdog Modem NCM: Tiap $MODEM_INTERVAL menit"
+if [ "$HAS_NCM" -eq 1 ]; then
+    echo "    - Watchdog Modem NCM: Tiap $MODEM_INTERVAL menit"
+fi
