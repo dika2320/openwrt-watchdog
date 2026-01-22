@@ -91,9 +91,9 @@ Jalankan di OpenWrt (via terminal):
 ```sh
 =================================================================================================================
 
-sh -c wget https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh
+sh -c "wget https://cdn.jsdelivr.net/gh/dika2320/openwrt-watchdog@main/install.sh
 chmod +x install.sh
-./install.sh
+./install.sh"
 
 
 UNISTALL:
